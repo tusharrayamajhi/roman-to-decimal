@@ -1,0 +1,16 @@
+{
+  "name": "romain_converter",
+  "version": "1.0.0",
+  "description": "convert roman to decimal and decimal to roman",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "roman",
+    "to",
+    "decimal"
+  ],
+  "author": "Tushar Rayamajhi",
+  "license": "ISC"
+}
