@@ -1,4 +1,3 @@
-
 function IntToRoman(num) {
     const values = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
     const numerals = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"];
@@ -14,6 +13,7 @@ function IntToRoman(num) {
 
     return result;
 }
+
 function romanToInt(roman) {
     const romanNumerals = {
         'I': 1,
@@ -36,15 +36,28 @@ function romanToInt(roman) {
         const currentSymbol = roman[i];
         const nextSymbol = roman[i + 1];
 
-        if (nextSymbol && romanNumerals[nextSymbol] > romanNumerals[currentSymbol]) {
+        if (nextSymbol && romanNumerals[currentSymbol + nextSymbol]) {
             decimal += romanNumerals[currentSymbol + nextSymbol];
-            i++; // Skip the next symbol
+            i++;
         } else {
             decimal += romanNumerals[currentSymbol];
         }
     }
 
-    return decimal ;
+    return decimal;
 }
 
-export default {romanToInt,IntToRoman};
+function isValidRoman(roman) {
+    if (typeof roman !== 'string' || roman === '') return false;
+    const regex = /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
+    return regex.test(roman);
+}
+
+function isValidInteger(num) {
+    return typeof num === 'number' && 
+           Number.isInteger(num) && 
+           num >= 1 && 
+           num <= 3999;
+}
+
+export default { romanToInt, IntToRoman, isValidRoman, isValidInteger };
