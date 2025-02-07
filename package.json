@@ -1,6 +1,6 @@
 {
   "name": "@tushar_rayamajhi/roman_converter",
-  "version": "1.0.2",
+  "version": "1.2.0",
   "description": "convert roman to decimal and decimal to roman",
   "main": "index.js",
   "type": "module",
