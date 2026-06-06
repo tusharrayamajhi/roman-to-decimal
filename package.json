@@ -1,18 +1,46 @@
 {
   "name": "@tushar_rayamajhi/roman_converter",
-  "version": "1.2.0",
-  "description": "convert roman to decimal and decimal to roman",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "Zero-dependency library for Roman numeral ↔ integer conversion, arithmetic, batch processing, and a CLI. Full TypeScript support.",
   "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "bin": {
+    "roman": "./src/cli.js"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "roman-converter.js",
+    "src/"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test test/index.test.js"
   },
   "keywords": [
     "roman",
-    "roman to decimal converter",
-    "decimal to roman converter",
-    "decimal"
+    "roman-numeral",
+    "roman-to-integer",
+    "integer-to-roman",
+    "converter",
+    "arithmetic",
+    "cli",
+    "typescript",
+    "zero-dependency"
   ],
   "author": "Tushar Rayamajhi",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tusharrayamajhi/roman-to-decimal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tusharrayamajhi/roman-to-decimal/issues"
+  },
+  "homepage": "https://github.com/tusharrayamajhi/roman-to-decimal#readme"
 }
