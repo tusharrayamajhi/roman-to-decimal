@@ -1,46 +1,61 @@
 {
-  "name": "@tushar_rayamajhi/roman_converter",
-  "version": "2.0.1",
-  "description": "Zero-dependency library for Roman numeral â†” integer conversion, arithmetic, batch processing, and a CLI. Full TypeScript support.",
-  "type": "module",
-  "main": "index.js",
-  "exports": {
-    ".": "./index.js"
-  },
-  "bin": {
-    "roman": "src/cli.js"
-  },
-  "files": [
-    "index.js",
-    "index.d.ts",
-    "roman-converter.js",
-    "src/"
-  ],
-  "scripts": {
-    "test": "node --test test/index.test.js"
-  },
-  "keywords": [
-    "roman",
-    "roman-numeral",
-    "roman-to-integer",
-    "integer-to-roman",
-    "converter",
-    "arithmetic",
-    "cli",
-    "typescript",
-    "zero-dependency"
-  ],
-  "author": "Tushar Rayamajhi",
-  "license": "ISC",
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tusharrayamajhi/roman-to-decimal.git"
-  },
-  "bugs": {
-    "url": "https://github.com/tusharrayamajhi/roman-to-decimal/issues"
-  },
-  "homepage": "https://github.com/tusharrayamajhi/roman-to-decimal#readme"
+    "name":  "@tushar_rayamajhi/roman_converter",
+    "version":  "2.1.0",
+    "description":  "Zero-dependency library for Roman numeral conversion, arithmetic, extended numerals (up to 3.9M), Roman clock, Latin words, fractions (uncia), batch ops, CLI, and TypeScript support.",
+    "type":  "module",
+    "main":  "index.js",
+    "bin":  {
+                "roman":  "src/cli.js"
+            },
+    "files":  [
+                  "index.js",
+                  "index.d.ts",
+                  "roman-converter.js",
+                  "src/"
+              ],
+    "scripts":  {
+                    "test":  "node --test test/index.test.js"
+                },
+    "keywords":  [
+                     "roman",
+                     "roman-numeral",
+                     "roman-to-integer",
+                     "integer-to-roman",
+                     "converter",
+                     "arithmetic",
+                     "extended-roman",
+                     "clock",
+                     "latin-words",
+                     "uncia",
+                     "fractions",
+                     "cli",
+                     "typescript",
+                     "zero-dependency",
+                     "react-hook"
+                 ],
+    "author":  "Tushar Rayamajhi",
+    "license":  "ISC",
+    "engines":  {
+                    "node":  "\u003e=18.0.0"
+                },
+    "repository":  {
+                       "type":  "git",
+                       "url":  "git+https://github.com/tusharrayamajhi/roman-to-decimal.git"
+                   },
+    "bugs":  {
+                 "url":  "https://github.com/tusharrayamajhi/roman-to-decimal/issues"
+             },
+    "homepage":  "https://github.com/tusharrayamajhi/roman-to-decimal#readme",
+    "exports":  {
+                    ".":  "./index.js",
+                    "./react":  "./src/react.js"
+                },
+    "peerDependencies":  {
+                             "react":  "\u003e=16.8.0"
+                         },
+    "peerDependenciesMeta":  {
+                                 "react":  {
+                                               "optional":  true
+                                           }
+                             }
 }

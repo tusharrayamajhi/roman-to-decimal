@@ -1,9 +1,25 @@
 # Roman Numeral Converter
 
-> Zero-dependency library for Roman numeral ↔ integer conversion, arithmetic, batch processing, and a CLI. Full TypeScript support.
+> The most complete Roman numeral library on npm — zero dependencies, full TypeScript support.
 
 [![npm](https://img.shields.io/npm/v/@tushar_rayamajhi/roman_converter)](https://www.npmjs.com/package/@tushar_rayamajhi/roman_converter)
 [![license](https://img.shields.io/npm/l/@tushar_rayamajhi/roman_converter)](LICENSE)
+
+## What's inside
+
+| Feature | Functions |
+|---|---|
+| **Core** | `toRoman`, `fromRoman`, `isValidRoman`, `isValidNumber` |
+| **Arithmetic** | `add`, `subtract`, `multiply`, `divide` |
+| **Utilities** | `compare`, `range`, `sort`, `batchToRoman`, `batchFromRoman`, `breakdown` |
+| **Extended** (up to 3,999,999) | `toExtendedRoman`, `fromExtendedRoman` |
+| **Clock / Time** | `toRomanTime`, `fromRomanTime`, `nowInRoman` |
+| **Latin Words** | `toWords`, `fromWords` |
+| **Fractions** (uncia) | `toUncia`, `fromUncia`, `listUncia` |
+| **React Hook** | `useRoman` (separate import) |
+| **CLI** | `roman` command |
+
+---
 
 ## Installation
 
@@ -11,9 +27,8 @@
 npm install @tushar_rayamajhi/roman_converter
 ```
 
-### CLI (global)
-
 ```bash
+# CLI — global install
 npm install -g @tushar_rayamajhi/roman_converter
 ```
 
@@ -22,10 +37,15 @@ npm install -g @tushar_rayamajhi/roman_converter
 ## Quick Start
 
 ```js
-import { toRoman, fromRoman } from '@tushar_rayamajhi/roman_converter';
+import { toRoman, fromRoman, add, toRomanTime, toWords, toExtendedRoman }
+  from '@tushar_rayamajhi/roman_converter';
 
-console.log(toRoman(2024));      // "MMXXIV"
-console.log(fromRoman('XIV'));   // 14
+toRoman(2024);              // "MMXXIV"
+fromRoman('XIV');           // 14
+add('XIV', 'III');          // "XVII"
+toRomanTime('14:30');       // "XIV:XXX"
+toWords(42);                // "quadraginta duo"
+toExtendedRoman(1000000);   // "(M)"
 ```
 
 Or use the default export:
@@ -39,17 +59,11 @@ converter.fromRoman('XLII');     // 42
 
 ---
 
-## API
+## Core
 
-### Core
-
-#### `toRoman(num, options?)`
+### `toRoman(num, options?)`
 
 Convert an integer (1–3999) to a Roman numeral string.
-
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `lowercase` | boolean | `false` | Return lowercase result |
 
 ```js
 import { toRoman } from '@tushar_rayamajhi/roman_converter';
@@ -61,146 +75,63 @@ toRoman(0);                           // throws RangeError
 toRoman(4000);                        // throws RangeError
 ```
 
-#### `fromRoman(roman)`
-
-Convert a Roman numeral string to an integer. **Case-insensitive.**
+### `fromRoman(roman)` — case-insensitive
 
 ```js
-import { fromRoman } from '@tushar_rayamajhi/roman_converter';
-
 fromRoman('MCMXCIV');   // 1994
 fromRoman('xlii');       // 42
-fromRoman('IIII');       // throws RangeError (invalid)
+fromRoman('IIII');       // throws RangeError
 ```
 
-#### `isValidRoman(roman)`
-
-Returns `true` if the string is a well-formed Roman numeral (1–3999). Case-insensitive.
+### `isValidRoman(roman)` / `isValidNumber(num)`
 
 ```js
-import { isValidRoman } from '@tushar_rayamajhi/roman_converter';
-
-isValidRoman('XIV');    // true
-isValidRoman('xlii');   // true
-isValidRoman('IIII');   // false
-isValidRoman('');       // false
-```
-
-#### `isValidNumber(num)`
-
-Returns `true` if `num` is an integer in the range 1–3999.
-
-```js
-import { isValidNumber } from '@tushar_rayamajhi/roman_converter';
-
-isValidNumber(42);      // true
-isValidNumber(0);       // false
-isValidNumber(4000);    // false
-isValidNumber(3.14);    // false
+isValidRoman('XIV');   // true
+isValidRoman('IIII');  // false (use IV)
+isValidNumber(42);     // true
+isValidNumber(4000);   // false
 ```
 
 ---
 
-### Arithmetic
+## Arithmetic
 
-All arithmetic functions accept Roman numeral strings **or** integers as inputs and return a Roman numeral string.
+All functions accept Roman numeral strings **or** integers and return a Roman numeral string.
 
 ```js
 import { add, subtract, multiply, divide } from '@tushar_rayamajhi/roman_converter';
-```
 
-#### `add(a, b, options?)`
-
-```js
 add('XIV', 'III');          // "XVII"
 add(10, 'V');               // "XV"
+subtract('X', 'IV');        // "VI"
+multiply('V', 'III');       // "XV"
+divide('X', 'III');         // "III"  (floor division)
+
 add(3000, 1000);            // throws RangeError (result 4000 out of range)
 add('XIV', 'III', { lowercase: true }); // "xvii"
 ```
 
-#### `subtract(a, b, options?)`
-
-```js
-subtract('X', 'IV');        // "VI"
-subtract(100, 'XC');        // "X"
-```
-
-#### `multiply(a, b, options?)`
-
-```js
-multiply('V', 'III');       // "XV"
-multiply(10, 10);           // "C"
-```
-
-#### `divide(a, b, options?)`
-
-Integer (floor) division.
-
-```js
-divide('X', 'III');         // "III"  (10 / 3 = 3)
-divide(100, 4);             // "XXV"
-```
-
 ---
 
-### Utilities
+## Utilities
 
 ```js
 import { compare, range, sort, batchToRoman, batchFromRoman, breakdown }
   from '@tushar_rayamajhi/roman_converter';
-```
 
-#### `compare(a, b)`
-
-Returns `-1`, `0`, or `1` — like `Array.sort` comparators.
-
-```js
 compare('X', 'V');          // 1   (10 > 5)
-compare('IV', 4);           // 0   (4 === 4)
+compare('IV', 4);           // 0   (equal)
 compare(1, 'M');            // -1  (1 < 1000)
-```
 
-#### `range(start, end, step?)`
+range(1, 5);                // ["I","II","III","IV","V"]
+range(10, 1, -3);           // ["X","VII","IV","I"]
 
-Generate an inclusive sequence of Roman numerals.
+sort(['X','V','I','M']);           // ["I","V","X","M"]
+sort(['X','V','I','M'], 'desc');   // ["M","X","V","I"]
 
-```js
-range(1, 5);               // ["I", "II", "III", "IV", "V"]
-range(10, 1, -3);          // ["X", "VII", "IV", "I"]
-range(1, 10, 2);           // ["I", "III", "V", "VII", "IX"]
-```
+batchToRoman([1, 5, 10]);          // ["I","V","X"]
+batchFromRoman(['I','V','X']);     // [1, 5, 10]
 
-#### `sort(arr, direction?)`
-
-Sort an array of Roman numeral strings and/or integers. Direction: `'asc'` (default) or `'desc'`.
-
-```js
-sort(['X', 'V', 'I', 'M']);              // ["I", "V", "X", "M"]
-sort(['X', 5, 'I', 100], 'desc');        // [100, "X", 5, "I"]
-```
-
-#### `batchToRoman(nums, options?)`
-
-```js
-batchToRoman([1, 2, 3, 4, 5]);
-// ["I", "II", "III", "IV", "V"]
-
-batchToRoman([10, 50, 100], { lowercase: true });
-// ["x", "l", "c"]
-```
-
-#### `batchFromRoman(romans)`
-
-```js
-batchFromRoman(['I', 'V', 'X', 'L', 'C']);
-// [1, 5, 10, 50, 100]
-```
-
-#### `breakdown(roman)`
-
-Decompose a Roman numeral into its additive components.
-
-```js
 breakdown('MCMXCIX');
 // [
 //   { numeral: "M",  value: 1000 },
@@ -208,79 +139,231 @@ breakdown('MCMXCIX');
 //   { numeral: "XC", value:   90 },
 //   { numeral: "IX", value:    9 }
 // ]
-
-breakdown('XIV');
-// [{ numeral: "X", value: 10 }, { numeral: "IV", value: 4 }]
 ```
+
+---
+
+## Extended Numerals (1 – 3,999,999)
+
+Uses parenthetical vinculum notation — the only npm package that supports this.
+
+| Symbol | Value |
+|---|---|
+| `(V)` | 5,000 |
+| `(X)` | 10,000 |
+| `(L)` | 50,000 |
+| `(C)` | 100,000 |
+| `(D)` | 500,000 |
+| `(M)` | 1,000,000 |
+
+```js
+import { toExtendedRoman, fromExtendedRoman, isValidExtendedNumber }
+  from '@tushar_rayamajhi/roman_converter';
+
+toExtendedRoman(4000);       // "(IV)"
+toExtendedRoman(9000);       // "(IX)"
+toExtendedRoman(1000000);    // "(M)"
+toExtendedRoman(1999999);    // "(M)(CM)(XC)(IX)CMXCIX"
+toExtendedRoman(3999999);    // "(M)(M)(M)(CM)(XC)(IX)CMXCIX"
+
+fromExtendedRoman('(M)');    // 1000000
+fromExtendedRoman('(IV)');   // 4000
+
+isValidExtendedNumber(5000000);  // false (max 3,999,999)
+isValidExtendedNumber(1000000);  // true
+```
+
+---
+
+## Clock / Time
+
+The only Roman numeral npm package with time support.
+Zero minutes are represented with `·` (nulla).
+
+```js
+import { toRomanTime, fromRomanTime, nowInRoman }
+  from '@tushar_rayamajhi/roman_converter';
+
+toRomanTime('14:30');                    // "XIV:XXX"
+toRomanTime('09:05');                    // "IX:V"
+toRomanTime('23:59');                    // "XXIII:LIX"
+toRomanTime('00:00');                    // "XII:·"  (midnight)
+toRomanTime('14:30', { format: '12h' }); // "II:XXX"
+toRomanTime(new Date());                 // current time
+toRomanTime('14:30', { lowercase: true }); // "xiv:xxx"
+
+fromRomanTime('XIV:XXX');
+// { hours: 14, minutes: 30, seconds: 0, formatted: '14:30' }
+
+nowInRoman();                // current time as Roman numerals
+nowInRoman({ seconds: true }); // includes seconds
+```
+
+---
+
+## Latin Words
+
+The only npm package that converts Roman numerals / integers to classical Latin words.
+
+```js
+import { toWords, fromWords } from '@tushar_rayamajhi/roman_converter';
+
+toWords(1);      // "unus"
+toWords(12);     // "duodecim"
+toWords(18);     // "duodeviginti"
+toWords(42);     // "quadraginta duo"
+toWords(88);     // "duodenonaginta"
+toWords(100);    // "centum"
+toWords(500);    // "quingenti"
+toWords(1000);   // "mille"
+toWords(2000);   // "duo milia"
+toWords(3999);   // "tria milia nongenti nonaginta novem"
+
+fromWords('quadraginta duo');  // 42
+fromWords('duo milia');        // 2000
+```
+
+---
+
+## Fractions (Uncia System)
+
+Roman fractions were base-12. No other npm package implements this.
+
+| Symbol | Name | Value |
+|---|---|---|
+| `·` | uncia | 1/12 |
+| `··` | sextans | 2/12 |
+| `···` | quadrans | 3/12 (¼) |
+| `····` | triens | 4/12 (⅓) |
+| `·····` | quincunx | 5/12 |
+| `S` | semis | 6/12 (½) |
+| `S·` | septunx | 7/12 |
+| `S··` | bes | 8/12 (⅔) |
+| `S···` | dodrans | 9/12 (¾) |
+| `S····` | dextans | 10/12 |
+| `S·····` | deunx | 11/12 |
+| `AS` | as | 12/12 (1) |
+
+```js
+import { toUncia, fromUncia, isValidUncia, listUncia }
+  from '@tushar_rayamajhi/roman_converter';
+
+toUncia(0.5);      // "S"
+toUncia(1/4);      // "···"
+toUncia(2/3);      // "S··"
+
+fromUncia('S');    // 0.5
+fromUncia('···');  // 0.25
+
+isValidUncia('S');   // true
+isValidUncia('X');   // false
+
+listUncia();  // array of all 12 entries with symbol, name, twelfths, decimal
+```
+
+---
+
+## React Hook
+
+```js
+import { useRoman } from '@tushar_rayamajhi/roman_converter/react';
+
+function RomanCounter() {
+  const { roman, integer, increment, decrement, set } = useRoman(1);
+
+  return (
+    <div>
+      <p>{roman} = {integer}</p>
+      <button onClick={() => decrement()}>−</button>
+      <button onClick={() => increment()}>+</button>
+      <button onClick={() => set(1000)}>Jump to M</button>
+    </div>
+  );
+}
+```
+
+**Hook API:**
+
+| Property | Type | Description |
+|---|---|---|
+| `integer` | `number` | Current integer value (1–3999) |
+| `roman` | `string` | Current Roman numeral |
+| `isValid` | `boolean` | Whether the current value is in range |
+| `set(value)` | `fn` | Set by integer or Roman numeral string |
+| `setRoman(str)` | `fn` | Set by Roman numeral string |
+| `increment(step?)` | `fn` | Increment (default step: 1) |
+| `decrement(step?)` | `fn` | Decrement (default step: 1) |
+| `reset()` | `fn` | Reset to initial value |
 
 ---
 
 ## CLI
 
-After installing globally (or via `npx`):
-
 ```
-USAGE
-  roman <number>               Convert integer → Roman numeral
-  roman <ROMAN>                Convert Roman numeral → integer
-  roman add <a> <b>            Add two values
-  roman sub <a> <b>            Subtract (a - b)
-  roman mul <a> <b>            Multiply
-  roman div <a> <b>            Integer-divide (floor)
-  roman range <s> <e> [step]   Emit a range of Roman numerals
-  roman sort <r1> <r2> ...     Sort Roman numerals
-  roman compare <a> <b>        Compare two values
-  roman breakdown <ROMAN>      Break a numeral into its components
+roman 2024              → MMXXIV
+roman MCMXCIX           → 1999
+roman add XIV III        → XVII
+roman sub L V            → XLV
+roman mul V III          → XV
+roman div X III          → III
+roman range 1 5          → I, II, III, IV, V
+roman range 10 1 -3      → X, VII, IV, I
+roman sort X V I M       → I, V, X, M
+roman sort desc X V I M  → M, X, V, I
+roman compare XIV X      → XIV > X
+roman breakdown MCMXCIX  → M=1000, CM=900, XC=90, IX=9
 
-FLAGS
-  --lowercase, -l              Output Roman numerals in lowercase
-  --json                       Output as JSON (where applicable)
-```
+roman ext 1000000        → (M)
+roman ext 3999999        → (M)(M)(M)(CM)(XC)(IX)CMXCIX
+roman ext "(M)"          → 1000000
 
-### Examples
+roman time               → current time (e.g. XIV:XXX)
+roman time 14:30         → XIV:XXX
+roman time 14:30 --12h   → II:XXX
+roman time from XIV:XXX  → { hours: 14, minutes: 30, formatted: '14:30' }
 
-```sh
-roman 2024              # MMXXIV
-roman MCMXCIX           # 1999
-roman add XIV III        # XVII
-roman sub L V            # XLV
-roman mul V III          # XV
-roman div X III          # III
-roman range 1 5          # I, II, III, IV, V
-roman range 10 1 -3      # X, VII, IV, I
-roman sort X V I M       # I, V, X, M
-roman compare XIV X      # XIV > X
-roman breakdown MCMXCIX  # M    = 1000 / CM = 900 / XC = 90 / IX = 9
-roman 42 --lowercase     # xlii
-roman range 1 5 --json   # ["I","II","III","IV","V"]
+roman words 42           → quadraginta duo
+roman words 1999         → mille nongenti nonaginta novem
+roman words from "duo milia" → 2000
+
+roman uncia 0.5          → S
+roman uncia 0.25         → ···
+roman uncia from S       → 0.5
+roman uncia list         → full symbol table
+
+roman 42 --lowercase     → xlii
+roman range 1 3 --json   → ["I","II","III"]
 ```
 
 ---
 
 ## TypeScript
 
-Full type definitions are included. No `@types/` package needed.
+Full type definitions included — no `@types/` package needed.
 
 ```ts
-import { toRoman, fromRoman, breakdown, type ToRomanOptions, type BreakdownPart }
-  from '@tushar_rayamajhi/roman_converter';
+import {
+  toRoman, fromRoman, add, toRomanTime, toExtendedRoman, toWords, toUncia,
+  type ToRomanOptions, type BreakdownPart, type ParsedTime, type UnciaEntry,
+} from '@tushar_rayamajhi/roman_converter';
 
-const roman: string = toRoman(42);
-const num: number   = fromRoman('XLII');
-const parts: BreakdownPart[] = breakdown('XIV');
+const r: string       = toRoman(42);
+const n: number       = fromRoman('XLII');
+const t: ParsedTime   = fromRomanTime('XIV:XXX');
+const u: UnciaEntry[] = listUncia();
 ```
 
 ---
 
 ## Migration from v1
 
-| v1 | v2 |
+| v1 | v2+ |
 |---|---|
 | `IntToRoman(n)` | `toRoman(n)` *(old name still works)* |
 | `romanToInt(r)` | `fromRoman(r)` *(old name still works)* |
 | `isValidInteger(n)` | `isValidNumber(n)` *(old name still works)* |
-| Silently returned `undefined` on bad input | Now throws `RangeError` / `TypeError` |
-| Case-sensitive input | Input is now case-insensitive |
+| Silent return on bad input | Now throws `RangeError` / `TypeError` |
+| Case-sensitive | Input is now case-insensitive |
 
 ---
 

@@ -1,70 +1,96 @@
+// ─── Shared options ───────────────────────────────────────────────────────────
+
 export interface ToRomanOptions {
   /** Output the Roman numeral in lowercase. Default: false */
   lowercase?: boolean;
 }
 
+// ─── Core ─────────────────────────────────────────────────────────────────────
+
+export function toRoman(num: number, options?: ToRomanOptions): string;
+export function fromRoman(roman: string): number;
+export function isValidRoman(roman: string): boolean;
+export function isValidNumber(num: number): boolean;
+
+// ─── Arithmetic ───────────────────────────────────────────────────────────────
+
+export function add(a: number | string, b: number | string, options?: ToRomanOptions): string;
+export function subtract(a: number | string, b: number | string, options?: ToRomanOptions): string;
+export function multiply(a: number | string, b: number | string, options?: ToRomanOptions): string;
+export function divide(a: number | string, b: number | string, options?: ToRomanOptions): string;
+
+// ─── Utilities ────────────────────────────────────────────────────────────────
+
 export interface BreakdownPart {
-  /** The Roman symbol(s) representing this component (e.g. "CM", "X") */
   numeral: string;
-  /** The integer value of this component */
   value: number;
 }
 
-// ─── Core ────────────────────────────────────────────────────────────────────
-
-/** Convert an integer (1–3999) to a Roman numeral string. */
-export function toRoman(num: number, options?: ToRomanOptions): string;
-
-/** Convert a Roman numeral string to an integer. Case-insensitive. */
-export function fromRoman(roman: string): number;
-
-/** Return true if the string is a well-formed Roman numeral (1–3999). Case-insensitive. */
-export function isValidRoman(roman: string): boolean;
-
-/** Return true if num is an integer in the range 1–3999. */
-export function isValidNumber(num: number): boolean;
-
-// ─── Arithmetic ──────────────────────────────────────────────────────────────
-
-/** Add two values (Roman numeral strings and/or integers). Returns a Roman numeral. */
-export function add(a: number | string, b: number | string, options?: ToRomanOptions): string;
-
-/** Subtract b from a. Returns a Roman numeral. */
-export function subtract(a: number | string, b: number | string, options?: ToRomanOptions): string;
-
-/** Multiply two values. Returns a Roman numeral. */
-export function multiply(a: number | string, b: number | string, options?: ToRomanOptions): string;
-
-/** Integer-divide a by b (floor). Returns a Roman numeral. */
-export function divide(a: number | string, b: number | string, options?: ToRomanOptions): string;
-
-// ─── Utilities ───────────────────────────────────────────────────────────────
-
-/**
- * Compare two values (Roman numerals or integers).
- * Returns -1 if a < b, 0 if equal, 1 if a > b.
- */
 export function compare(a: number | string, b: number | string): -1 | 0 | 1;
-
-/** Generate an inclusive range of Roman numerals from start to end. */
 export function range(start: number, end: number, step?: number): string[];
-
-/** Sort an array of Roman numeral strings and/or integers. */
 export function sort(arr: Array<number | string>, direction?: 'asc' | 'desc'): Array<number | string>;
-
-/** Convert an array of integers to Roman numeral strings. */
 export function batchToRoman(nums: number[], options?: ToRomanOptions): string[];
-
-/** Convert an array of Roman numeral strings to integers. */
 export function batchFromRoman(romans: string[]): number[];
-
-/**
- * Break a Roman numeral into its additive components.
- * e.g. breakdown('XIV') → [{numeral:'X',value:10},{numeral:'IV',value:4}]
- */
 export function breakdown(roman: string): BreakdownPart[];
 
-// ─── Backward-compatible aliases ─────────────────────────────────────────────
+// ─── Extended numerals (1 – 3,999,999) ───────────────────────────────────────
+
+export function toExtendedRoman(num: number, options?: ToRomanOptions): string;
+export function fromExtendedRoman(roman: string): number;
+export function isValidExtendedRoman(roman: string): boolean;
+export function isValidExtendedNumber(num: number): boolean;
+
+// ─── Clock / Time ─────────────────────────────────────────────────────────────
+
+export interface RomanTimeOptions {
+  /** '12h' maps hours to 1–12; '24h' (default) keeps 1–23. */
+  format?: '12h' | '24h';
+  /** Include seconds in the output. Default: false */
+  seconds?: boolean;
+  /** Append AM/PM suffix. Default: false */
+  meridiem?: boolean;
+  lowercase?: boolean;
+}
+
+export interface TimeObject {
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+export interface ParsedTime {
+  hours: number;
+  minutes: number;
+  seconds: number;
+  /** Zero-padded "HH:MM" or "HH:MM:SS" string */
+  formatted: string;
+}
+
+export function toRomanTime(input: Date | string | TimeObject, options?: RomanTimeOptions): string;
+export function fromRomanTime(roman: string): ParsedTime;
+export function nowInRoman(options?: RomanTimeOptions): string;
+
+// ─── Fractions (uncia system) ─────────────────────────────────────────────────
+
+export interface UnciaEntry {
+  twelfths: number;
+  symbol: string;
+  name: string;
+  decimal: number;
+}
+
+export function toUncia(fraction: number): string;
+export function fromUncia(symbol: string): number;
+export function unciaInfo(symbol: string): UnciaEntry;
+export function isValidUncia(symbol: string): boolean;
+export function listUncia(): UnciaEntry[];
+
+// ─── Latin words ──────────────────────────────────────────────────────────────
+
+export function toWords(num: number): string;
+export function fromWords(words: string): number;
+
+// ─── Backward-compatible aliases ──────────────────────────────────────────────
 
 export { toRoman as IntToRoman };
 export { fromRoman as romanToInt };
@@ -87,6 +113,20 @@ declare const converter: {
   batchToRoman: typeof batchToRoman;
   batchFromRoman: typeof batchFromRoman;
   breakdown: typeof breakdown;
+  toExtendedRoman: typeof toExtendedRoman;
+  fromExtendedRoman: typeof fromExtendedRoman;
+  isValidExtendedRoman: typeof isValidExtendedRoman;
+  isValidExtendedNumber: typeof isValidExtendedNumber;
+  toRomanTime: typeof toRomanTime;
+  fromRomanTime: typeof fromRomanTime;
+  nowInRoman: typeof nowInRoman;
+  toUncia: typeof toUncia;
+  fromUncia: typeof fromUncia;
+  unciaInfo: typeof unciaInfo;
+  isValidUncia: typeof isValidUncia;
+  listUncia: typeof listUncia;
+  toWords: typeof toWords;
+  fromWords: typeof fromWords;
   /** @deprecated Use toRoman() */
   IntToRoman: typeof toRoman;
   /** @deprecated Use fromRoman() */
