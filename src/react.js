@@ -1,24 +1,26 @@
-// React hook for Roman numeral conversion.
-// Import path: @tushar_rayamajhi/roman_converter/react
-//
+// React hooks for Roman numeral conversion.
+// Import: import { useRoman, useRomanClock } from '@tushar_rayamajhi/roman_converter/react'
 // Requires React >=16.8.0 as a peer dependency.
-// Usage:
-//   import { useRoman } from '@tushar_rayamajhi/roman_converter/react';
-//   const { roman, integer, set, increment, decrement } = useRoman(42);
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { toRoman, fromRoman, isValidRoman, isValidNumber } from './core.js';
+import { toRomanTime } from './clock.js';
 
 /**
  * useRoman — stateful hook that keeps an integer value in sync with its Roman numeral.
  *
  * @param {number|string} initial  Starting value — integer (1–3999) or Roman numeral string.
  * @returns {{ integer, roman, isValid, set, setRoman, increment, decrement, reset }}
+ *
+ * @example
+ *   const { roman, integer, increment, decrement } = useRoman(1);
  */
 export function useRoman(initial = 1) {
-  const startInt = typeof initial === 'string' && isValidRoman(initial)
-    ? fromRoman(initial)
-    : isValidNumber(initial) ? initial : 1;
+  const startInt = useMemo(() => {
+    if (typeof initial === 'string' && isValidRoman(initial)) return fromRoman(initial);
+    if (isValidNumber(initial)) return initial;
+    return 1;
+  }, []);
 
   const [integer, setInteger] = useState(startInt);
 
@@ -54,35 +56,35 @@ export function useRoman(initial = 1) {
 }
 
 /**
- * useRomanClock — live Roman numeral clock, updates every second.
+ * useRomanClock — live Roman numeral clock that ticks every second.
  *
- * @param {{ format?: '12h'|'24h', seconds?: boolean, meridiem?: boolean }} options
+ * @param {{ format?: '12h'|'24h', seconds?: boolean, meridiem?: boolean, lowercase?: boolean }} options
  * @returns {{ time: string, hours: number, minutes: number, seconds: number }}
+ *
+ * @example
+ *   const { time } = useRomanClock();
+ *   // time => "XIV:XXX"
  */
 export function useRomanClock(options = {}) {
-  // Lazy import of clock module to avoid circular deps at parse time
-  const [time, setTime] = useState(() => {
-    const { toRomanTime } = require('./clock.js');
-    return toRomanTime(new Date(), options);
-  });
-  const [raw, setRaw] = useState(() => {
-    const now = new Date();
-    return { hours: now.getHours(), minutes: now.getMinutes(), seconds: now.getSeconds() };
-  });
+  const optsRef = useRef(options);
+  optsRef.current = options;
 
-  // useEffect is not imported here to keep this file React-version-agnostic;
-  // consumers must wrap this in a component.
-  // Provide a startClock() helper instead.
-  const startClock = useCallback(() => {
-    const tick = async () => {
-      const { toRomanTime } = await import('./clock.js');
-      const now = new Date();
-      setTime(toRomanTime(now, options));
-      setRaw({ hours: now.getHours(), minutes: now.getMinutes(), seconds: now.getSeconds() });
+  const getSnapshot = () => {
+    const now = new Date();
+    return {
+      time:    toRomanTime(now, optsRef.current),
+      hours:   now.getHours(),
+      minutes: now.getMinutes(),
+      seconds: now.getSeconds(),
     };
-    tick();
-    return setInterval(tick, 1000);
+  };
+
+  const [state, setState] = useState(getSnapshot);
+
+  useEffect(() => {
+    const id = setInterval(() => setState(getSnapshot()), 1000);
+    return () => clearInterval(id);
   }, []);
 
-  return { time, ...raw, startClock };
+  return state;
 }

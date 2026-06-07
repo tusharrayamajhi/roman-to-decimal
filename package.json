@@ -1,6 +1,6 @@
 {
     "name":  "@tushar_rayamajhi/roman_converter",
-    "version":  "2.1.0",
+    "version":  "2.1.1",
     "description":  "Zero-dependency library for Roman numeral conversion, arithmetic, extended numerals (up to 3.9M), Roman clock, Latin words, fractions (uncia), batch ops, CLI, and TypeScript support.",
     "type":  "module",
     "main":  "index.js",
