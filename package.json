@@ -1,7 +1,7 @@
 {
   "name": "@tushar_rayamajhi/roman_converter",
-  "version": "2.0.0",
-  "description": "Zero-dependency library for Roman numeral ↔ integer conversion, arithmetic, batch processing, and a CLI. Full TypeScript support.",
+  "version": "2.0.1",
+  "description": "Zero-dependency library for Roman numeral â†” integer conversion, arithmetic, batch processing, and a CLI. Full TypeScript support.",
   "type": "module",
   "main": "index.js",
   "exports": {
